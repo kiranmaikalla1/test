@@ -1,0 +1,11 @@
+FROM dockermirror.tpp.tsysecom.com/openjdk:11.0.4-jre-slim
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python2.7 python-pip gcc\
+    && pip --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org install --upgrade pip requests setuptools 
+RUN pip install requests[security] && apt-get clean
+COPY commonutil.py /usr/bin/commonutil.py
+COPY entrypoint.py /usr/bin/entrypoint.py
+COPY cacerts.py /usr/bin/cacerts.py
+COPY vault.py /usr/bin/vault.py
+ADD certs /usr/local/certs
+ENTRYPOINT ["python", "/usr/bin/entrypoint.py"]
